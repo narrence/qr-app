@@ -1,14 +1,17 @@
 import { supabase } from "@/lib/supabase";
 import { redirect } from "next/navigation";
+import { NextRequest } from "next/server";
 
 export async function GET(
-    req:Request,
-    { params }: { params: { slug: string } }
+    req: NextRequest,
+    { params }: { params: Promise<{ slug: string }> }
 ) {
+    const { slug } = await params;
+
     const { data } = await supabase
         .from("qr_codes")
         .select("original_url")
-        .eq("slug", params.slug)
+        .eq("slug", slug)
         .single();
 
     if (!data) {
