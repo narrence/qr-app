@@ -15,6 +15,12 @@ export default function Home() {
         </div>
 
         <QRGenerator />
+
+        <div className="w-full">
+          <p className="text-2sm text-gray-400 text-center">
+            © Created from Nadi Design Project
+          </p>
+        </div>
       </main>
     </div>
   );
