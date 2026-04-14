@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 import QRCode from "qrcode";
 import { WandSparkles  } from "lucide-react";
 
@@ -9,6 +9,23 @@ export default function QRGenerator() {
     const [qr, setQr] = useState("");
     const [mode, setMode] = useState<"static" | "dynamic">("static");
     const [slug, setSlug] =  useState("");
+    const [fileName, setFileName] = useState("");
+
+
+    const downloadQR = () => {
+        if (!qr) return;
+
+        const link = document.createElement("a");
+        link.href = qr;
+
+        // Fallback kalau user belum isi nama
+        const safeName = fileName
+            ? fileName.replace(/[^a-z0-9]/gi, "_").toLowerCase()
+            : "qr-code";
+
+        link.download = `${safeName}.png`;
+        link.click();
+    };
 
     const generate = async () => {
         if (!url) return;
@@ -40,7 +57,7 @@ export default function QRGenerator() {
         <div className="flex flex-row w-full max-width-[1248px] bg-gradient-to-b from-[#432CA7] to-[#3A2B84] p-[16px] rounded-[24px] shadow space-x-4">
             <div className="flex w-full p-[16px]">
                 <div className="flex-col w-full space-y-4">
-                    {/* INPUT */}
+                    {/* INPUT LINK */}
                     <input
                         className="border-1 border-[#7060F6] p-3 w-full rounded-[12px]
                                     hover:border-violet-200 
@@ -49,6 +66,17 @@ export default function QRGenerator() {
                         placeholder="ex: https://example.com"
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}    
+                    />
+
+                    {/* INPUT NAME */}
+                    <input
+                        className="border-1 border-[#7060F6] p-3 w-full rounded-[12px]
+                                    hover:border-violet-200 
+                                    focus:border-violet-300 focus:ring-2 focus:ring-violet-200 
+                                    outline-none transition"
+                        placeholder="ex: QR Code Google"
+                        value={fileName}
+                        onChange={(e) => setFileName(e.target.value)}    
                     />
                 
                     {/* TOGGLE */}
@@ -74,8 +102,8 @@ export default function QRGenerator() {
                     {/* GENERATE */}
                     <button
                     onClick={generate}
-                    className="flex flex-row gap-3 items-center justify-center bg-[#7060F6] text-white px-6 py-3 rounded-[12px] w-full
-                                hover:bg-[#817DFC] hover:scale-103 hover:rotate-1
+                    className="flex flex-row gap-3 items-center justify-center bg-[#7060F6] font-medium text-white px-6 py-3 rounded-[12px] w-full
+                                hover:bg-[#817DFC] hover:scale-103 hover:rotate-1 hover:font-bold
                                 transition"
                     >
                         <WandSparkles size={24}/>
@@ -84,17 +112,33 @@ export default function QRGenerator() {
                 </div>
             </div>
             
-            <div className="flex w-full max-w-[424px] bg-[#A2A6FF] rounded-[16px]">
+            <div className="flex flex-col space-x-2 w-full max-w-[424px] bg-[#A2A6FF] rounded-[16px] items-center justify-center p-[16px]">
+                
+                <div className="mb-2">
+                    <p className="text-xl font-bold text-[#5333CF]">
+                        Your QR will Ready Here
+                    </p>
+                </div>
                 {/* RESULT */}
                 {qr && (
-                    <div className="text-center space-y-3">
-                        <img src={qr} alt="QR Code" className="mx-auto" />
+                    <div className="items-center justify-center text-center space-y-3">
+                        <img src={qr} alt="QR Code" className="min-w-[200px] mx-auto rounded-[12px]" />
 
                         {mode === "dynamic" && (
                             <p className="text-sm text-gray-500">
                                 {window.location.origin}/q/{slug}
                             </p>
                         )}
+
+                        {/* Button Download */}
+                        <button
+                            onClick={downloadQR}
+                            className="px-4 py-2 rounded-[12px] bg-violet-100 font-bold text-[#5333CF]
+                                        hover:scale-105"
+                            >
+                            Download QR
+                        </button>
+
                     </div>
                 )}
             </div>
