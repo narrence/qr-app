@@ -3,6 +3,8 @@
 import { use, useState } from "react";
 import QRCode from "qrcode";
 import { WandSparkles,Download,RefreshCcw,AlertCircle } from "lucide-react";
+import toast from "react-hot-toast";
+import { resolve } from "path";
 
 export default function QRGenerator() {
     const [url, setUrl] = useState("");
@@ -13,6 +15,7 @@ export default function QRGenerator() {
     const [qrSvg, setQrSvg] = useState("");
     const [open, setOpen] = useState(false);
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const downloadPNG = (scale = 1) => {
         if (!qr) return;
@@ -46,15 +49,6 @@ export default function QRGenerator() {
         link.click();
     };
 
-    const isValidUrl = (value: string) => {
-        try {
-            new URL(value);
-            return true;
-        } catch {
-            return false;
-        }
-    };
-
     const generate = async () => {
         // VALIDASI EMPTY URL
         if (!url.trim()) {
@@ -65,44 +59,82 @@ export default function QRGenerator() {
         // Reset error kalau valud
         setError("");
 
+        const isValidUrl = (value: string) => {
+            try {
+                new URL(value);
+                return true;
+            } catch {
+                return false;
+            }
+        };
+
         // VALIDASI URL STRING
         if (!isValidUrl(url)) {
             setError("Enter a valid URL, bro (https://...)");
             return;
         }
 
-        // STATIC MODE
-        if (mode === "static") {
-            const png = await QRCode.toDataURL(url, {width:512});
-            const svg = await QRCode.toString(url, {
+        setLoading(true);
+        setQr("");
+        setQrSvg("");
+
+        // TOAST GENERATE
+        const toastId = toast.loading("Generating QR Code...");
+
+        try {
+            // Buat Delay Ketika Generate
+            await delay(1300);
+            // STATIC MODE
+            if (mode === "static") {
+                const png = await QRCode.toDataURL(url, {width:1024});
+                const svg = await QRCode.toString(url, {
+                    type: "svg",
+                    width: 512,
+                });
+                
+                setQr(png);
+                setQrSvg(svg);
+                setSlug("");
+    
+                toast.success("Successfully Create QR, Bro", {
+                    id: toastId,
+                });
+    
+                return;
+            }
+    
+            // Dynamic Mode
+            const res = await fetch("/api/create", {
+                method: "POST",
+                body: JSON.stringify({ url }),
+            });
+    
+            const data = await res.json();
+            const qrUrl = `${window.location.origin}/q/${data.slug}`;
+            
+            const png = await QRCode.toDataURL(qrUrl, {width: 1024});
+            const svg = await QRCode.toString(qrUrl, {
                 type: "svg",
                 width: 512,
             });
-
+            
             setQr(png);
             setQrSvg(svg);
-            setSlug("");
-            return;
+            setSlug(data.slug);
+    
+            toast.success("Successfully Create QR, Bro", {
+                id: toastId,
+            });
+        } catch (err) {
+            console.error(err);
+
+            // ERROR REPLACE
+            toast.error("An error occurred while generating the QR code, Bro", {
+                id: toastId,
+            });
+        } finally {
+            setLoading(false)
         }
-
-        // Dynamic Mode
-        const res = await fetch("/api/create", {
-            method: "POST",
-            body: JSON.stringify({ url }),
-        });
-
-        const data = await res.json();
-        const qrUrl = `${window.location.origin}/q/${data.slug}`;
-        
-        const png = await QRCode.toDataURL(qrUrl, {width: 512});
-        const svg = await QRCode.toString(qrUrl, {
-            type: "svg",
-            width: 512,
-        });
-
-        setQr(png);
-        setQrSvg(svg);
-        setSlug(data.slug);
     };
 
     const resetQR = () => {
@@ -114,6 +146,9 @@ export default function QRGenerator() {
         setMode("static"); // optional, balike default
     };
 
+    const delay = (ms: number) =>
+        new Promise((resolve) => setTimeout(resolve, ms));
+
     return (
         <div className="flex flex-row w-full max-width-[1248px] bg-gradient-to-b from-[#432CA7] to-[#3A2B84] p-[16px] rounded-[24px] shadow space-x-5">
             <div className="flex w-full p-[16px]">
@@ -121,7 +156,7 @@ export default function QRGenerator() {
                     {/* INPUT LINK */}
                     <div className="flex-col">
                         <p className="text-l font-semibold mb-2">
-                            Input Your Link Here
+                            Input Your Link Here *
                         </p>
                         <input
                             className="border-1 border-[#7060F6] p-3 w-full rounded-[12px]
@@ -162,7 +197,7 @@ export default function QRGenerator() {
                     <div className="flex-col">
                         <div className="flex pb-2 flex-row gap-2 items-center mb-1 relative">
                             <p className="text-l font-semibold">
-                                Select QR Type
+                                Select QR Type *
                             </p>
                             <div className="relative">
                                 <AlertCircle
@@ -231,42 +266,64 @@ export default function QRGenerator() {
                         Your QR will Ready Here
                     </p>
                 </div>
+                
                 {/* RESULT */}
-                {qr && (
-                    <div className="items-center justify-center text-center space-y-3">
-                        <img src={qr} alt="QR Code" className="max-w-[280px] mx-auto rounded-[12px]" />
+                {(loading || qr) && (
+                <div className="items-center justify-center text-center space-y-3">
 
+                    {/* 🔥 SKELETON */}
+                    {loading ? (
+                    <div className="flex justify-center">
+                        <div className="w-[280px] h-[280px] bg-gray-200 rounded-[12px] animate-pulse flex items-center justify-center">
+                        <div className="grid grid-cols-6 gap-1">
+                            {Array.from({ length: 36 }).map((_, i) => (
+                            <div
+                                key={i}
+                                className="w-3 h-3 bg-gray-300 rounded-sm"
+                            />
+                            ))}
+                        </div>
+                        </div>
+                    </div>
+                    ) : (
+                    <>
+                        {/* ✅ QR IMAGE */}
+                        <img
+                        src={qr}
+                        alt="QR Code"
+                        className="max-w-[280px] mx-auto rounded-[12px] transition-opacity duration-300"
+                        />
+
+                        {/* 🔗 DYNAMIC LINK */}
                         {mode === "dynamic" && (
-                            <p className="text-sm text-gray-500">
-                                {window.location.origin}/q/{slug}
-                            </p>
+                        <p className="text-sm font-medium text-[#3A2B84]">
+                            QR Code URL: {window.location.origin}/q/{slug}
+                        </p>
                         )}
 
-                        {/* Button Download */}
-                        <div className="
-                            flex flex-row
-                            gap-3
-                            justify-center">
-                            <button
-                                onClick={() => downloadPNG()}
-                                className="flex gap-2 px-4 py-2 rounded-[12px] bg-violet-100 font-bold text-[#5333CF] items-center justify-center min-w-[96px] cursor-pointer
-                                            hover:scale-105"
-                                >
-                                <Download size={16}/>
-                                PNG
-                            </button>
-                            <button
-                                onClick={() => downloadSVG()}
-                                className="flex gap-2 px-4 py-2 rounded-[12px] bg-violet-100 font-bold text-[#5333CF] items-center justify-center min-w-[96px] cursor-pointer
-                                            hover:scale-105"
-                                >
-                                <Download size={16}/>
-                                SVG
-                            </button>
-                        </div>
+                        {/* 📥 BUTTON DOWNLOAD */}
+                        <div className="flex flex-row gap-3 justify-center">
+                        <button
+                            onClick={() => downloadPNG()}
+                            className="flex gap-2 px-4 py-2 rounded-[12px] bg-violet-100 font-bold text-[#5333CF] items-center justify-center min-w-[96px] cursor-pointer hover:scale-105"
+                        >
+                            <Download size={16} />
+                            PNG
+                        </button>
 
-                    </div>
+                        <button
+                            onClick={() => downloadSVG()}
+                            className="flex gap-2 px-4 py-2 rounded-[12px] bg-violet-100 font-bold text-[#5333CF] items-center justify-center min-w-[96px] cursor-pointer hover:scale-105"
+                        >
+                            <Download size={16} />
+                            SVG
+                        </button>
+                        </div>
+                    </>
+                    )}
+                </div>
                 )}
+
             </div>
         </div>
     );
