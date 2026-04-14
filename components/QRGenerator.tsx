@@ -11,6 +11,7 @@ export default function QRGenerator() {
     const [slug, setSlug] =  useState("");
     const [fileName, setFileName] = useState("");
     const [qrSvg, setQrSvg] = useState("");
+    const [open, setOpen] = useState(false);
     const [error, setError] = useState("");
 
     const downloadPNG = (scale = 1) => {
@@ -45,15 +46,30 @@ export default function QRGenerator() {
         link.click();
     };
 
+    const isValidUrl = (value: string) => {
+        try {
+            new URL(value);
+            return true;
+        } catch {
+            return false;
+        }
+    };
+
     const generate = async () => {
-        // VALIDASI
+        // VALIDASI EMPTY URL
         if (!url.trim()) {
-            setError("Link tidak boleh kosong");
+            setError("Fill in this link first, bro");
             return;
         }
 
         // Reset error kalau valud
         setError("");
+
+        // VALIDASI URL STRING
+        if (!isValidUrl(url)) {
+            setError("Enter a valid URL, bro (https://...)");
+            return;
+        }
 
         // STATIC MODE
         if (mode === "static") {
@@ -144,19 +160,24 @@ export default function QRGenerator() {
                 
                     {/* TOGGLE */}
                     <div className="flex-col">
-                        <div className="flex pb-2 flex-row gap-2 items-center mb-1">
+                        <div className="flex pb-2 flex-row gap-2 items-center mb-1 relative">
                             <p className="text-l font-semibold">
                                 Select QR Type
                             </p>
-                            <div className="relative group">
-                                <AlertCircle size={20} className="cursor-pointer"/>
+                            <div className="relative">
+                                <AlertCircle
+                                size={20}
+                                onClick={() => setOpen(!open)}
+                                className="text-violet-300 cursor-pointer"
+                                />
                                 
                                 {/* Tooltips */}
+                                {open && (
                                 <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-48
-                                    bg-black text-white text-xs rounded-[12px] px-3 py-2
-                                    opacity-0 group-hover:opacity-80 transition pointer-event-none">
-                                    Static: Direct URL QR, Dynamic: URL with Source
+                                    bg-black text-white text-xs rounded-[12px] px-3 py-2 shadow">
+                                    Static: Direct URL QR, Dynamic: Complete URL
                                 </div>
+                                )}
                             </div>
                         </div>
                         <div className="flex gap-4">
@@ -185,11 +206,12 @@ export default function QRGenerator() {
                         onClick={generate}
                         className="flex flex-row gap-3 items-center justify-center bg-[#7060F6] font-medium text-white px-6 py-3 rounded-[12px] w-full cursor-pointer
                                     hover:bg-[#817DFC] hover:scale-103 hover:rotate-1 hover:font-bold
-                                    transition"
+                                    transition "
                         >
                             <WandSparkles size={24}/>
                             Do Magic Now
                         </button>
+                        {/* RESET */}
                         <button
                         onClick={resetQR}
                         className="flex flex-row gap-3 px-6 cursor-pointer
@@ -212,7 +234,7 @@ export default function QRGenerator() {
                 {/* RESULT */}
                 {qr && (
                     <div className="items-center justify-center text-center space-y-3">
-                        <img src={qr} alt="QR Code" className="min-w-[200px] mx-auto rounded-[12px]" />
+                        <img src={qr} alt="QR Code" className="max-w-[280px] mx-auto rounded-[12px]" />
 
                         {mode === "dynamic" && (
                             <p className="text-sm text-gray-500">
