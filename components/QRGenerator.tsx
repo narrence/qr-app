@@ -10,13 +10,12 @@ export default function QRGenerator() {
     const [mode, setMode] = useState<"static" | "dynamic">("static");
     const [slug, setSlug] =  useState("");
     const [fileName, setFileName] = useState("");
+    const [qrSvg, setQrSvg] = useState("");
 
-
-    const downloadQR = () => {
+    const downloadPNG = (scale = 1) => {
         if (!qr) return;
 
         const link = document.createElement("a");
-        link.href = qr;
 
         // Fallback kalau user belum isi nama
         const safeName = fileName
@@ -24,6 +23,24 @@ export default function QRGenerator() {
             : "qr-code";
 
         link.download = `${safeName}.png`;
+        link.href = qr;
+        link.click();
+    };
+
+    const downloadSVG = () => {
+        if (!qrSvg) return;
+
+        const blob = new Blob([qrSvg], { type: "image/svg+xml" });
+        const urlBlob = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+
+        const safeName = fileName
+            ? fileName.replace(/[^a-z0-9]/gi, "_").toLowerCase()
+            : "qr-code";
+
+        link.href = urlBlob;
+        link.download = `${safeName}.svg`;
         link.click();
     };
 
@@ -32,8 +49,14 @@ export default function QRGenerator() {
 
         // STATIC MODE
         if (mode === "static") {
-            const qrImage = await QRCode.toDataURL(url);
-            setQr(qrImage);
+            const png = await QRCode.toDataURL(url, {width:512});
+            const svg = await QRCode.toString(url, {
+                type: "svg",
+                width: 512,
+            });
+
+            setQr(png);
+            setQrSvg(svg);
             setSlug("");
             return;
         }
@@ -45,11 +68,16 @@ export default function QRGenerator() {
         });
 
         const data = await res.json();
-
         const qrUrl = `${window.location.origin}/q/${data.slug}`;
-        const qrImage = await QRCode.toDataURL(qrUrl);
+        
+        const png = await QRCode.toDataURL(qrUrl, {width: 512});
+        const svg = await QRCode.toString(qrUrl, {
+            type: "svg",
+            width: 512,
+        });
 
-        setQr(qrImage);
+        setQr(png);
+        setQrSvg(svg);
         setSlug(data.slug);
     };
 
@@ -115,7 +143,7 @@ export default function QRGenerator() {
             <div className="flex flex-col space-x-2 w-full max-w-[424px] bg-[#A2A6FF] rounded-[16px] items-center justify-center p-[16px]">
                 
                 <div className="mb-2">
-                    <p className="text-xl font-bold text-[#5333CF]">
+                    <p className="text-xl font-bold text-[#3A2B84]">
                         Your QR will Ready Here
                     </p>
                 </div>
@@ -131,13 +159,25 @@ export default function QRGenerator() {
                         )}
 
                         {/* Button Download */}
-                        <button
-                            onClick={downloadQR}
-                            className="px-4 py-2 rounded-[12px] bg-violet-100 font-bold text-[#5333CF]
-                                        hover:scale-105"
-                            >
-                            Download QR
-                        </button>
+                        <div className="
+                            flex flex-col
+                            gap-3
+                            justify-center">
+                            <button
+                                onClick={() => downloadPNG()}
+                                className="px-4 py-2 rounded-[12px] bg-violet-100 font-bold text-[#5333CF]
+                                            hover:scale-105"
+                                >
+                                Download PNG
+                            </button>
+                            <button
+                                onClick={() => downloadSVG()}
+                                className="px-4 py-2 rounded-[12px] bg-violet-100 font-bold text-[#5333CF]
+                                            hover:scale-105"
+                                >
+                                Download SVG
+                            </button>
+                        </div>
 
                     </div>
                 )}
