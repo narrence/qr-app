@@ -114,7 +114,10 @@ export default function QRGenerator() {
                                         outline-none transition"
                             placeholder="ex: https://example.com"
                             value={url}
-                            onChange={(e) => setUrl(e.target.value)}    
+                            onChange={(e) => {
+                                setUrl(e.target.value);
+                                setError("");
+                            }}    
                         />
                         {error && (
                             <p className="text-red-400 text-sm font-bold mt-2">
