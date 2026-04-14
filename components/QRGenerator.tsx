@@ -2,7 +2,7 @@
 
 import { use, useState } from "react";
 import QRCode from "qrcode";
-import { WandSparkles  } from "lucide-react";
+import { WandSparkles,Download  } from "lucide-react";
 
 export default function QRGenerator() {
     const [url, setUrl] = useState("");
@@ -160,22 +160,24 @@ export default function QRGenerator() {
 
                         {/* Button Download */}
                         <div className="
-                            flex flex-col
+                            flex flex-row
                             gap-3
                             justify-center">
                             <button
                                 onClick={() => downloadPNG()}
-                                className="px-4 py-2 rounded-[12px] bg-violet-100 font-bold text-[#5333CF]
+                                className="flex gap-2 px-4 py-2 rounded-[12px] bg-violet-100 font-bold text-[#5333CF] items-center justify-center min-w-[96px]
                                             hover:scale-105"
                                 >
-                                Download PNG
+                                <Download size={16}/>
+                                PNG
                             </button>
                             <button
                                 onClick={() => downloadSVG()}
-                                className="px-4 py-2 rounded-[12px] bg-violet-100 font-bold text-[#5333CF]
+                                className="flex gap-2 px-4 py-2 rounded-[12px] bg-violet-100 font-bold text-[#5333CF] items-center justify-center min-w-[96px]
                                             hover:scale-105"
                                 >
-                                Download SVG
+                                <Download size={16}/>
+                                SVG
                             </button>
                         </div>
 
