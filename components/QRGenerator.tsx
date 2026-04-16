@@ -150,180 +150,188 @@ export default function QRGenerator() {
         new Promise((resolve) => setTimeout(resolve, ms));
 
     return (
-        <div className="flex flex-row w-full max-width-[1248px] bg-gradient-to-b from-[#432CA7] to-[#3A2B84] p-[16px] rounded-[24px] shadow space-x-5">
-            <div className="flex w-full p-[16px]">
-                <div className="flex-col w-full space-y-5">
-                    {/* INPUT LINK */}
-                    <div className="flex-col">
-                        <p className="text-l font-semibold mb-2">
-                            Input Your Link Here *
-                        </p>
-                        <input
-                            className="border-1 border-[#7060F6] p-3 w-full rounded-[12px]
-                                        hover:border-violet-200 
-                                        focus:border-violet-300 focus:ring-2 focus:ring-violet-200 
-                                        outline-none transition"
-                            placeholder="ex: https://example.com"
-                            value={url}
-                            onChange={(e) => {
-                                setUrl(e.target.value);
-                                setError("");
-                            }}    
-                        />
-                        {error && (
-                            <p className="text-red-400 text-sm font-bold mt-2">
-                                {error}
-                            </p>
-                        )}
-                    </div>
-
-                    {/* INPUT NAME */}
-                    <div className="flex-col">
-                        <p className="text-l font-semibold mb-2">
-                            Input QR Code Name
-                        </p>
-                        <input
-                            className="border-1 border-[#7060F6] p-3 w-full rounded-[12px]
-                                        hover:border-violet-200 
-                                        focus:border-violet-300 focus:ring-2 focus:ring-violet-200 
-                                        outline-none transition"
-                            placeholder="ex: QR Code Google"
-                            value={fileName}
-                            onChange={(e) => setFileName(e.target.value)}    
-                        />
-                    </div>
+        <div className="flex w-full max-w-[1254px] mx-auto px-[16px]">
+            <div className="flex flex-col lg:flex-row w-full max-w-[1248px] mx-auto
+                            bg-gradient-to-b from-[#432CA7] to-[#3A2B84]
+                            p-4 md:p-6 rounded-[24px] shadow gap-5">
                 
-                    {/* TOGGLE */}
-                    <div className="flex-col">
-                        <div className="flex pb-2 flex-row gap-2 items-center mb-1 relative">
-                            <p className="text-l font-semibold">
-                                Select QR Type *
+                {/* LEFT FORM */}
+                <div className="flex w-full md:p-4">
+                    <div className="flex flex-col w-full space-y-5">
+                        
+                        {/* INPUT LINK */}
+                        <div className="flex-col">
+                            <p className="text-sm md:text-base font-semibold mb-2">
+                                Input Your Link Here *
                             </p>
-                            <div className="relative">
-                                <AlertCircle
-                                size={20}
-                                onClick={() => setOpen(!open)}
-                                className="text-violet-300 cursor-pointer"
-                                />
-                                
-                                {/* Tooltips */}
-                                {open && (
-                                <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-48
-                                    bg-black text-white text-xs rounded-[12px] px-3 py-2 shadow">
-                                    Static: Direct URL QR, Dynamic: Complete URL
+                            <input
+                                className="border-1 border-[#7060F6] p-3 w-full rounded-[12px]
+                                            hover:border-violet-200 
+                                            focus:border-violet-300 focus:ring-2 focus:ring-violet-200 
+                                            outline-none transition text-sm md:text-base"
+                                placeholder="ex: https://example.com"
+                                value={url}
+                                onChange={(e) => {
+                                    setUrl(e.target.value);
+                                    setError("");
+                                }}    
+                            />
+                            {error && (
+                                <p className="text-red-400 text-xs md:text-sm font-bold mt-2">
+                                    {error}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* INPUT NAME */}
+                        <div className="flex-col">
+                            <p className="text-sm md:text-base font-semibold mb-2">
+                                Input QR Code Name
+                            </p>
+                            <input
+                                className="border-1 border-[#7060F6] p-3 w-full rounded-[12px]
+                                            hover:border-violet-200 
+                                            focus:border-violet-300 focus:ring-2 focus:ring-violet-200 
+                                            outline-none transition text-sm md:text-base"
+                                placeholder="ex: QR Code Google"
+                                value={fileName}
+                                onChange={(e) => setFileName(e.target.value)}    
+                            />
+                        </div>
+                    
+                        {/* TOGGLE */}
+                        <div className="flex-col">
+                            <div className="flex pb-2 flex-wrap gap-2 items-center mb-2 relative">
+                                <p className="text-sm md:text-base font-semibold">
+                                    Select QR Type *
+                                </p>
+                                <div className="relative">
+                                    <AlertCircle
+                                    size={20}
+                                    onClick={() => setOpen(!open)}
+                                    className="text-violet-300 cursor-pointer"
+                                    />
+                                    
+                                    {/* Tooltips */}
+                                    {open && (
+                                    <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-44
+                                                    bg-black text-white text-xs rounded-[12px] px-3 py-2 shadow z-10">
+                                        Static: Direct URL QR, Dynamic: Complete URL
+                                    </div>
+                                    )}
                                 </div>
-                                )}
+                            </div>
+                            <div className="flex gap-3">
+                                <button
+                                onClick={() => setMode("static")}
+                                className={`flex-1 px-4 py-2 rounded min-w-[124px] cursor-pointer ${
+                                    mode === "static" ? " bg-[#432CA7] border-1 border-[#EDEFFF] font-bold text-white rounded-[12px]" : "bg-[#3A2B84] border-1 border-[#7060F6] rounded-[12px]"
+                                }`}
+                                > Static
+                                </button>
+
+                                <button
+                                onClick={() => setMode("dynamic")}
+                                className={`flex-1 px-4 py-2 rounded min-w-[124px] cursor-pointer ${
+                                    mode === "dynamic" ? "bg-[#432CA7] border-1 border-[#EDEFFF] font-bold text-white rounded-[12px]" : "bg-[#3A2B84] border-1 border-[#7060F6] rounded-[12px]"
+                                }`}
+                                >
+                                Dynamic
+                                </button>
                             </div>
                         </div>
-                        <div className="flex gap-4">
+                        
+                        <div className="flex flex-col gap-4 justify-center items-center">
+                            {/* GENERATE */}
                             <button
-                            onClick={() => setMode("static")}
-                            className={`px-4 py-2 rounded min-w-[124px] cursor-pointer ${
-                                mode === "static" ? "bg-[#432CA7] border-1 border-[#EDEFFF] font-bold text-white rounded-[12px]" : "bg-[#3A2B84] border-1 border-[#7060F6] rounded-[12px]"
-                            }`}
-                            > Static
-                            </button>
-
-                            <button
-                            onClick={() => setMode("dynamic")}
-                            className={`px-4 py-2 rounded min-w-[124px] cursor-pointer ${
-                                mode === "dynamic" ? "bg-[#432CA7] border-1 border-[#EDEFFF] font-bold text-white rounded-[12px]" : "bg-[#3A2B84] border-1 border-[#7060F6] rounded-[12px]"
-                            }`}
+                            onClick={generate}
+                            className="flex flex-row gap-3 items-center justify-center bg-[#7060F6] font-medium text-white px-6 py-3 rounded-[12px] w-full cursor-pointer
+                                        hover:bg-[#817DFC] hover:scale-103 hover:rotate-1 hover:font-bold
+                                        transition text-sm md:text-base"
                             >
-                            Dynamic
+                                <WandSparkles size={24}/>
+                                Do Magic Now
+                            </button>
+                            {/* RESET */}
+                            <button
+                            onClick={resetQR}
+                            className="flex flex-row gap-3 px-6 cursor-pointer
+                                        hover:font-bold hover:scale-102 text-sm md:text-base"
+                            >
+                                <RefreshCcw size={24}/>
+                                Reset QR
                             </button>
                         </div>
+                    </div>
+                </div>
+                
+                {/*  RIGHT RESULT */}
+                <div className="flex flex-col space-x-2 w-full lg:max-w-[424px] aspect-square bg-[#A2A6FF] rounded-[16px] items-center justify-center p-[16px]">
+                    
+                    <div className="mb-2">
+                        <p className=" text-base md:text-xl font-bold text-[#3A2B84] text-center">
+                            Your QR will Ready Here
+                        </p>
                     </div>
                     
-                    <div className="flex flex-col gap-4 justify-center items-center">
-                        {/* GENERATE */}
-                        <button
-                        onClick={generate}
-                        className="flex flex-row gap-3 items-center justify-center bg-[#7060F6] font-medium text-white px-6 py-3 rounded-[12px] w-full cursor-pointer
-                                    hover:bg-[#817DFC] hover:scale-103 hover:rotate-1 hover:font-bold
-                                    transition "
-                        >
-                            <WandSparkles size={24}/>
-                            Do Magic Now
-                        </button>
-                        {/* RESET */}
-                        <button
-                        onClick={resetQR}
-                        className="flex flex-row gap-3 px-6 cursor-pointer
-                                    hover:font-bold hover:scale-102"
-                        >
-                            <RefreshCcw size={24}/>
-                            Reset QR
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <div className="flex flex-col space-x-2 w-full max-w-[424px] bg-[#A2A6FF] rounded-[16px] items-center justify-center p-[16px]">
-                
-                <div className="mb-2">
-                    <p className="text-xl font-bold text-[#3A2B84]">
-                        Your QR will Ready Here
-                    </p>
-                </div>
-                
-                {/* RESULT */}
-                {(loading || qr) && (
-                <div className="items-center justify-center text-center space-y-3">
+                    {/* RESULT */}
+                    {(loading || qr) && (
+                    <div className="items-center justify-center text-center space-y-3">
 
-                    {/* 🔥 SKELETON */}
-                    {loading ? (
-                    <div className="flex justify-center">
-                        <div className="w-[280px] h-[280px] bg-gray-200 rounded-[12px] animate-pulse flex items-center justify-center">
-                        <div className="grid grid-cols-6 gap-1">
-                            {Array.from({ length: 36 }).map((_, i) => (
-                            <div
-                                key={i}
-                                className="w-3 h-3 bg-gray-300 rounded-sm"
+                        {/* 🔥 SKELETON */}
+                        {loading ? (
+                        <div className="flex justify-center">
+                            <div className="w-[200px] md:w-[280px] h-[200px] md:h-[280px] bg-gray-200 rounded-[12px] animate-pulse flex items-center justify-center">
+                            <div className="grid grid-cols-6 gap-1">
+                                {Array.from({ length: 36 }).map((_, i) => (
+                                <div
+                                    key={i}
+                                    className="w-2 md:w-3 h-2 md:h-3 bg-gray-300 rounded-sm"
+                                />
+                                ))}
+                            </div>
+                            </div>
+                        </div>
+                        ) : (
+                        <>
+                            {/* ✅ QR IMAGE */}
+                            <img
+                            src={qr}
+                            alt="QR Code"
+                            className="w-[200px] md:w-[280px] mx-auto rounded-[12px] transition-opacity duration-300"
                             />
-                            ))}
-                        </div>
-                        </div>
-                    </div>
-                    ) : (
-                    <>
-                        {/* ✅ QR IMAGE */}
-                        <img
-                        src={qr}
-                        alt="QR Code"
-                        className="max-w-[280px] mx-auto rounded-[12px] transition-opacity duration-300"
-                        />
 
-                        {/* 🔗 DYNAMIC LINK */}
-                        {mode === "dynamic" && (
-                        <p className="text-sm font-medium text-[#3A2B84]">
-                            QR Code URL: {window.location.origin}/q/{slug}
-                        </p>
+                            {/* 🔗 DYNAMIC LINK */}
+                            {mode === "dynamic" && (
+                            <p className="text-xs md:text-sm font-medium text-[#3A2B84] break-all">
+                                QR Code URL: {window.location.origin}/q/{slug}
+                            </p>
+                            )}
+
+                            {/* 📥 BUTTON DOWNLOAD */}
+                            <div className="flex flex-wrap gap-3 justify-center">
+                            <button
+                                onClick={() => downloadPNG()}
+                                className="flex gap-2 px-4 py-2 rounded-[12px] bg-violet-100 font-bold text-[#5333CF] items-center justify-center min-w-[96px] cursor-pointer hover:scale-105"
+                            >
+                                <Download size={16} />
+                                PNG
+                            </button>
+
+                            <button
+                                onClick={() => downloadSVG()}
+                                className="flex gap-2 px-4 py-2 rounded-[12px] bg-violet-100 font-bold text-[#5333CF] items-center justify-center min-w-[96px] cursor-pointer hover:scale-105"
+                            >
+                                <Download size={16} />
+                                SVG
+                            </button>
+                            </div>
+                        </>
                         )}
-
-                        {/* 📥 BUTTON DOWNLOAD */}
-                        <div className="flex flex-row gap-3 justify-center">
-                        <button
-                            onClick={() => downloadPNG()}
-                            className="flex gap-2 px-4 py-2 rounded-[12px] bg-violet-100 font-bold text-[#5333CF] items-center justify-center min-w-[96px] cursor-pointer hover:scale-105"
-                        >
-                            <Download size={16} />
-                            PNG
-                        </button>
-
-                        <button
-                            onClick={() => downloadSVG()}
-                            className="flex gap-2 px-4 py-2 rounded-[12px] bg-violet-100 font-bold text-[#5333CF] items-center justify-center min-w-[96px] cursor-pointer hover:scale-105"
-                        >
-                            <Download size={16} />
-                            SVG
-                        </button>
-                        </div>
-                    </>
+                    </div>
                     )}
-                </div>
-                )}
 
+                </div>
             </div>
         </div>
     );
