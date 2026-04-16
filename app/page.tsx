@@ -10,7 +10,7 @@ export default function Home() {
               Easier Link to QR Code
           </h1>
           <p className="text-2xl font-medium text-[#5333CF]">
-              Helping you to make QR with easier step and simple
+              Helping you to make QR with easier step
           </p>
         </div>
 
