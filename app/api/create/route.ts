@@ -3,13 +3,17 @@ import { nanoid } from "nanoid";
 
 export async function POST(req: Request) {
     try {
-        const { url } = await req.json();
+        const { url, name, type } = await req.json();
 
         const slug = nanoid(6);
 
         const { error } = await supabase.from("qr_codes").insert({
+            name,
             slug,
             original_url: url,
+            type,
+            scans: 0,
+            is_active: true,
         });
 
         if (error) {
