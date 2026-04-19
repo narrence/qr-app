@@ -5,6 +5,7 @@ import QRCode from "qrcode";
 import { WandSparkles,Download,RefreshCcw,AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { resolve } from "path";
+import { useRef } from "react";
 
 export default function QRGenerator() {
     const [url, setUrl] = useState("");
