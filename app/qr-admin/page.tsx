@@ -18,7 +18,7 @@ export default function LoginPage() {
         if (error) {
             alert("Login Gagal");
         } else {
-            router.push("/qr-admin/app")
+            router.push("/qr-admin/dashboard")
         }
     };
 
