@@ -72,6 +72,7 @@ export default function QRTable({ data }: { data: QRItem[] }) {
                   <img
                     src={qrMap[item.id]}
                     className="w-12 h-12 rounded"
+                    alt="qrcodes-img"
                   />
                 ) : (
                   <div className="w-12 h-12 bg-gray-200 animate-pulse rounded" />

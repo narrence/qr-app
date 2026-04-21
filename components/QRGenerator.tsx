@@ -87,6 +87,18 @@ export default function QRGenerator() {
             await delay(1300);
             // STATIC MODE
             if (mode === "static") {
+                await fetch("/api/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        url,
+                        name: fileName || "Untitled QR",
+                        type: "static"
+                    }),
+                });
+                
                 const png = await QRCode.toDataURL(url, {width:1024});
                 const svg = await QRCode.toString(url, {
                     type: "svg",
@@ -107,8 +119,22 @@ export default function QRGenerator() {
             // Dynamic Mode
             const res = await fetch("/api/create", {
                 method: "POST",
-                body: JSON.stringify({ url }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    url,
+                    name: fileName || "Untitled QR",
+                    type: "dynamic",
+                }),
             });
+
+            if (!res.ok) {
+                const err = await res.json();
+                console.error("API ERROR:", err);
+                toast.error("Failed save to database bro");
+                return;
+            }
     
             const data = await res.json();
             const qrUrl = `${window.location.origin}/q/${data.slug}`;

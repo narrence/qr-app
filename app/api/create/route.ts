@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { supabaseServer } from "@/lib/supabaseServer";
 import { nanoid } from "nanoid";
 
 export async function POST(req: Request) {
@@ -7,7 +8,7 @@ export async function POST(req: Request) {
 
         const slug = nanoid(6);
 
-        const { error } = await supabase.from("qr_codes").insert({
+        const { error } = await supabaseServer.from("qr_codes").insert({
             name,
             slug,
             original_url: url,

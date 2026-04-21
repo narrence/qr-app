@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { supabaseServer } from "@/lib/supabaseServer";
 import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
 
@@ -8,7 +9,7 @@ export async function GET(
 ) {
     const { slug } = await params;
 
-    const { data } = await supabase
+    const { data } = await supabaseServer
         .from("qr_codes")
         .select("original_url")
         .eq("slug", slug)
