@@ -8,11 +8,11 @@ export default function AdminSidebar() {
       <h1 className="font-bold text-lg mb-6">QR Admin</h1>
 
       <nav className="space-y-3">
-        <Link href="/qr-admin/app" className="block">
+        <Link href="/qr-admin/#" className="block">
           QR List
         </Link>
 
-        <Link href="/qr-admin/app/users" className="block">
+        <Link href="/qr-admin/#" className="block">
           Admin Users
         </Link>
       </nav>
