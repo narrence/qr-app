@@ -12,13 +12,13 @@ export default function AdminSidebar() {
           Dashboard
         </Link>
         
-        {/* <Link href="/qr-admin/lists" className="block">
+        <Link href="/qr-admin/lists" className="block">
           Lists
-        </Link> */}
-
-        <Link href="/qr-admin/#" className="block">
-          Users
         </Link>
+
+        {/* <Link href="/qr-admin/#" className="block">
+          Users
+        </Link> */}
       </nav>
     </div>
   );
