@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+// import { supabase } from "@/lib/supabase";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
