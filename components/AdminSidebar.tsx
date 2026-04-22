@@ -16,9 +16,9 @@ export default function AdminSidebar() {
           Lists
         </Link>
 
-        {/* <Link href="/qr-admin/#" className="block">
+        <Link href="/qr-admin/users" className="block">
           Users
-        </Link> */}
+        </Link>
       </nav>
     </div>
   );
