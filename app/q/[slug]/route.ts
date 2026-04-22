@@ -8,16 +8,21 @@ export async function GET(
     { params }: { params: Promise<{ slug: string }> }
 ) {
     const { slug } = await params;
-
     const { data } = await supabaseServer
         .from("qr_codes")
-        .select("original_url")
+        .select("*")
         .eq("slug", slug)
         .single();
 
     if (!data) {
         return new Response("Not Found", {status: 404});
     }
+    //Update Scan Count
+    await supabaseServer
+        .from("qr_codes")
+        .update({ scans: data.scans + 1 })
+        .eq("slug", slug); 
 
+    //redirect
     redirect(data.original_url);
 }
