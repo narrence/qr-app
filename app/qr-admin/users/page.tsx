@@ -2,6 +2,8 @@ import AdminSidebar from "@/components/AdminSidebar";
 import UserTable from "@/components/UsersTable";
 import { supabaseServer } from "@/lib/supabaseServer";
 
+export const dynamic = 'force-dynamic';
+
 export default async function QRListPage() {
   const { data } = await supabaseServer
     .from("profiles")

@@ -2,6 +2,8 @@ import AdminSidebar from "@/components/AdminSidebar";
 import QRTable from "@/components/QRTable";
 import { supabaseServer } from "@/lib/supabaseServer";
 
+export const dynamic = 'force-dynamic';
+
 export default async function QRListPage() {
   const { data } = await supabaseServer
     .from("qr_codes")
