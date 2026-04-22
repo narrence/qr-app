@@ -19,10 +19,14 @@ export async function GET(
         return new Response("Not Found", {status: 404});
     }
     //Update Scan Count
-    await supabaseServer
+    const { error: updateError } = await supabaseServer
         .from("qr_codes")
         .update({ scans: (data.scans ||0) + 1 })
-        .eq("slug", slug); 
+        .eq("id", data.id);
+        
+    if (updateError) {
+        console.error("UPDATE ERROR:", updateError);
+    }
 
     //redirect
     redirect(data.original_url);
