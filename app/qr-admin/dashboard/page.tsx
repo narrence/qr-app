@@ -19,8 +19,11 @@ export default async function DashboardPage() {
         {/* 🔥 CARD ANALYTICS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           
+          {/* TOTAL SCANS */}
           <div className="bg-white rounded-xl p-5 shadow">
-            <p className="text-sm text-gray-500">Total Scan</p>
+            <p className="text-sm text-gray-500">
+              Total Scan
+            </p>
             <h2 className="text-3xl font-bold mt-2">
               {totalScans}
             </h2>
