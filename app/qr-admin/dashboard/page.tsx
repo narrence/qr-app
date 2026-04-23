@@ -4,10 +4,16 @@ import AdminSidebar from "@/components/AdminSidebar";
 export default async function DashboardPage() {
   const { data } = await supabaseServer
     .from("qr_codes")
-    .select("scans");
+    .select("type, scans");
 
   const totalScans =
     data?.reduce((acc, item) => acc + (item.scans || 0), 0) || 0;
+
+  const totalStatic =
+    data?.filter(i => i.type === "static").length || 0;
+    
+  const totalDynamic =
+    data?.filter(i => i.type === "dynamic").length || 0;
 
   return (
     <div className="flex">
@@ -26,6 +32,26 @@ export default async function DashboardPage() {
             </p>
             <h2 className="text-3xl font-bold mt-2">
               {totalScans}
+            </h2>
+          </div>
+
+          {/* TOTAL STATIC */}
+          <div className="bg-white rounded-xl p-5 shadow">
+            <p className="text-sm text-gray-500">
+              Total Static
+            </p>
+            <h2 className="text-3xl font-bold mt-2">
+              {totalStatic}
+            </h2>
+          </div>
+
+          {/* TOTAL DYNAMIC */}
+          <div className="bg-white rounded-xl p-5 shadow">
+            <p className="text-sm text-gray-500">
+              Total Dynamic
+            </p>
+            <h2 className="text-3xl font-bold mt-2">
+              {totalDynamic}
             </h2>
           </div>
 
