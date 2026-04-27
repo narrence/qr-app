@@ -18,15 +18,20 @@ export async function GET(
     if (error || !data) {
         return new Response("Not Found", {status: 404});
     }
-    //Update Scan Count
-    const { error: updateError } = await supabaseServer
-        .from("qr_codes")
-        .update({ scans: (data.scans ||0) + 1 })
-        .eq("id", data.id);
+    // //Update Scan Count
+    // const { error: updateError } = await supabaseServer
+    //     .from("qr_codes")
+    //     .update({ scans: (data.scans ||0) + 1 })
+    //     .eq("id", data.id);
         
-    if (updateError) {
-        console.error("UPDATE ERROR:", updateError);
-    }
+    // if (updateError) {
+    //     console.error("UPDATE ERROR:", updateError);
+    // }
+
+     // 🔥 SAFE UPDATE + LOG
+    await supabaseServer.rpc("increment_scan_and_log", {
+        qr_slug: slug,
+    });
 
     //redirect
     redirect(data.original_url);
