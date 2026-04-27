@@ -15,11 +15,7 @@ type Props = {
 
 export default function ScanChart({ data }: Props) {
   return (
-    <div className="bg-white p-5 rounded-xl shadow">
-      <h2 className="text-lg font-semibold mb-4">
-        Scan per Day
-      </h2>
-
+    <div>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data}>
           <XAxis dataKey="day" />

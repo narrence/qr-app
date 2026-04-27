@@ -1,27 +1,30 @@
 import { supabaseServer } from "@/lib/supabaseServer";
 import AdminSidebar from "@/components/AdminSidebar";
 import ScanChart from "@/components/ScanChart";
-import { group } from "console";
+// import { group } from "console";
 
 export default async function DashboardPage() {
-  const { data } = await supabaseServer
+  const { data: qrData } = await supabaseServer
     .from("qr_codes")
-    .select("type, scans, scanned_at")
+    .select("type,scans");
+  
+  const { data: scanData } = await supabaseServer
+    .from("qr_scans")
+    .select("scanned_at")
     .order("scanned_at", {ascending: true});
 
   const totalScans =
-    data?.reduce((acc, item) => acc + (item.scans || 0), 0) || 0;
+    qrData?.reduce((acc, item) => acc + (item.scans || 0), 0) || 0;
 
   const totalStatic =
-    data?.filter(i => i.type === "static").length || 0;
+    qrData?.filter(i => i.type === "static").length || 0;
     
   const totalDynamic =
-    data?.filter(i => i.type === "dynamic").length || 0;
+    qrData?.filter(i => i.type === "dynamic").length || 0;
 
   // GROUP BY DATE
   const grouped: Record<string, number> = {};
-
-  data?. forEach((item) => {
+  scanData?. forEach((item) => {
     const day = new Date(item.scanned_at).toLocaleDateString("en-CA"); //format YYYY-MM-DD
 
     if (!grouped[day]) {
@@ -78,7 +81,13 @@ export default async function DashboardPage() {
               </h2>
             </div>
 
-            <ScanChart data={chartData} />
+            {/* SCAN PER DAY*/}
+            <div className="col-span-full bg-white p-5 rounded-xl shadow">
+              <h2 className="text-lg font-semibold mb-4">
+                Scan per Day
+              </h2>
+              <ScanChart data={chartData} />
+            </div>
         </div>
       </div>
       </div>
